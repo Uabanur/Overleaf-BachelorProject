@@ -1,0 +1,41 @@
+\section{F\# Modules} \label{sec:Implementation-FSharpModules}
+As the different branches are dependent on the functionality granted by the F\# modules, these need to be implemented first. The implementation of the two modules is discussed with focus on the choices taken during implementation, and not necessarily on the code directly.
+
+\subsection{Function Parser} \label{ssec:Implementation-FunctionParser}
+The F\# module for parsing functions, called \texttt{FunctionParser}, is implemented using the library called \texttt{FParsec} making it possible to implement text parsers for formal grammars. \cite{FParsec}
+
+The library is an F\# adaptation of Parsec, the parser combinator library for Haskell by Daan Leijen. \cite{Parsec}
+
+Looking at the source code for \texttt{FParsec}, there is an example of how to use the library, where a simple calculator is implemented using a predefined class by the name \texttt{OperatorPrecedenceParser}. Looking at the documentation for the class we see in the description:
+
+\quoteref
+{
+The OperatorPrecedenceParser class (OPP) represents a dynamically configurable parser for parsing expression grammars involving binary infix (e.g. $1 + 1$), unary prefix (e.g. $-1$), unary postfix (e.g. $1++$) and C‐style ternary operators (e.g. $a \; ? \; b \; : \; c$).
+}
+{
+From definition of the \texttt{OPP} class in the documentation \url{http://www.quanttec.com/fparsec/reference/operatorprecedenceparser.html\#members.OperatorPrecedenceParser}.
+}
+
+which is exactly what we want.
+
+Functionalities such as operator associativity and hierarchy as well as managing left-recursion are implemented in the class, making it easy to define the terms for the lexer and each of the operators. 
+
+Looking at the type of the mapping for infix operators accepted by the OPP class, it is:
+
+\begin{lstlisting} [language=FSharp]
+mapping: 'TTerm -> 'TTerm -> 'TTerm
+\end{lstlisting}
+
+meaning the discriminated union for creating the AST has to follow the initial grammar suggested in the design section (Section \ref{ssec:DynamicProperties}), as the terms on each side of the operator has to be of the same type. This is possible since associativity is expressed explicitly when defining the operators, although this must be tested properly since the implementation then depends on the library implementation of operator associativity (more on this in Section \ref{ssec:Testing-FunctionParserModule}).
+
+The benefit of this, is that the implementation can use an evaluation function, based on a single discriminated union.
+
+This makes for a simpler, and easier to read, implementation. The full implementation of the function parser can be seen in the source code, which should be clear even for those not acquainted with the F\# syntax.
+
+The implemented function parser supports: Addition, subtraction, multiplication, division, exponentiation, parentheses, sine, cosine, log, square root, unary negation, decimal numbers and the parameters \textit{t}, \textit{q}. 
+
+\subsection{Impact Calculator} \label{ssec:Implementation-ImpactCalculator}
+
+The implementation of the impact calculator module is executed by strict guidance of the algorithm and types outlined in the requirements and design sections (Sections \ref{sec:Requirements-ImpactComputationAlgorithm} and \ref{sec:Design-ImpactComputation}). This is assured by letting the designed types define the interface for the module and implementing the functions following the procedures.
+
+No further tools or libraries are needed for the implementation, and the reader is advised to look at the source code for the module to see the direct implementation. The module will be tested thoroughly (details in Section \ref{ssec:Testing-ImpactCalculatorModule}), as this module will be one of the critical point in the implementation regarding the correctness of the final results of the program.

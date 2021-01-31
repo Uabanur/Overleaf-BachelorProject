@@ -1,0 +1,17 @@
+\section{Result Visualisation} \label{sec:ResultVisualisation} 
+
+To gain benefit from the functionality of the program, there must be incorporated feedback to the user, based on the impact computations.
+
+As we are dealing with timestamped data points, it is natural to represent the resulting indicator scores by plotting.
+
+Before we can do this, the user has to be able to choose which component to calculate the indicator scores for, and which impact category is of interest to see. Since the impact quantities share different units, they could either be normalised, between -1 and 1, plotted with multiple axis or plotted individually by demand
+
+In this case, the latter is chosen, as it is not know how many impact categories will be plotted, multiple axes or multiple normalised plots with legends could become quite an excessive amount of information.
+
+The results will be implemented as a separate branch in the overall architecture, by calling external plotting tools. 
+
+It comes without saying, that the interaction with this branch is highly dependent on the work done in the previously defined branches, as the model in the model-view-control design pattern for the branch will be the LCI model constructed during the interaction with the previous branches.
+
+As the functionality of this branch is purely to calculate the indicator scores and present the results, information should only be extracted from the model, and it should therefore not be altered at any point during interaction with this branch. 
+
+In addition to plotting indicator scores, it should be possible to output the calculated result in a \texttt{.csv} file, when requested.

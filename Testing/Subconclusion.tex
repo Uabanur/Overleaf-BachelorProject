@@ -1,0 +1,12 @@
+\section{Subconclusion}\label{sec:Testing-Subconclusion}
+
+The tests performed on the implementation follow the guidelines of the book \textit{Software Engineering ed.  10} by Ian Sommerville\cite{SoftwareEngineering}. The three stages: \textbf{Unit testing}, \textbf{Component Testing} and \textbf{System Testing} performed, looking at progressively more composite systems. 
+
+The parts of the implementation important for unit testing are specified and tested directly, making up the first two stages of testing.
+
+The complete system is then thoroughly testing using scenario testing and defined use cases, as the third stage of testing. 
+Together, the unit tests and the scenario tests verify that the integral units behave as intended, as well as the interaction between all units as part of components and finally the entire system. 
+
+The unit tests created for the stand-alone F\# modules are written in the F\# language, and run before deploying the compiled modules to the main program. This independent testing ensures that the modules are individually functioning correctly independent of how they are used.
+
+All tests make use of input partitions, as input possibilities for the individual test cases are infinite. The partitions are representative for each kind/composition of input values. This covers all scenarios without having to go through all possible input values exhaustively. 

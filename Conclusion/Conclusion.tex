@@ -1,0 +1,103 @@
+\chapter{Conclusion} \label{ch:Conclusion}
+
+%Problem Description
+\noop{
+The goal of this project, is to create an impact assessment tool for defined foreground systems, implementing dynamic LCA for modelling.
+
+The resulting tool must agree with the indicator scores using traditional aggregation methods for static systems, as well as being capable of modelling a system changing through time.
+
+Extensions, compared with the existing tools, are introduced using time stamped data values, and dynamic properties for extrapolating data when no recorded data is available.
+
+The result should be lightweight and user friendly, but capable of both professional use in research, and as a teaching tool for students to study how system impacts can behave.
+}
+
+%Analysis sub-conclusion
+\noop{
+In conclusion, the design of the program will follow the patterns Model-View-Control and Inversion of Control, as architectural and behavioural guides.
+
+The programming paradigms used will be object-oriented (in the language C#) for model extraction and result visualisation, and functional (in the language F#) for custom algorithmic modules. 
+
+These languages support great compatibility inside the .Net framework.
+}
+
+%Design sub-conclusion
+\noop{
+In conclusion for the design of the program, the overall architecture will consist of a general core, calling progressively customised branches for functionality, following the IoC design pattern. 
+
+Each node of the architectural tree will be defined by the MVC design pattern, to keep distinct separation in responsibility
+
+From the core, there will extend branches with focus in individual aspects of the LCI model extraction, and result visualisation. 
+For components such as background and foreground systems, further branches will be used, to specify properties for individual components.
+
+Certain functionalities are required for model extraction and impact computations, which are implemented as functional modules. 
+
+These modules will follow specified interfaces and will be tested, to make sure that the behaviour is as intended.
+
+Results in the form of indicator scores, will be shown as a 2D plot over the requested time interval. 
+Results can be printed to a .csv file.
+
+User experience, in the form of UI interaction, is taken into consideration while designing the program. 
+
+There will be focus on providing an overview of the created system, as well as minimising redundant repetitions by making it possible to save and load LCI models.
+}
+
+%Implementation sub-conclusion
+\noop{
+The architectural nodes are implemented using \texttt{Gtk\#}. This tool is chosen for its compatibility with the MVC design pattern, community, being cross platform and an easy-to-use layout engine.
+
+The F\# modules: \texttt{FunctionParser} and \texttt{ImpactCalculator} are implemented. The function parser uses the library \texttt{FParsec} and relies on the functionality implemented in the class \texttt{OperatorPrecedenceParser} as well as a simple evaluation function. The impact calculator is implemented without need for additional tools, but guided strictly by the required algorithm.
+
+All branches defined in the design section are implemented as \texttt{Frames}, which are partial views, nested in the main window, giving access to the functionality of the branch. Functionality needed for the branches in form of plotting tools and data classes are implemented accordingly. 
+
+Impact calculations are performed by a worker thread, to keep the application responsive during large system evaluations. Access to the computed data is restricted by a lock strictly handled by the main thread, to avoid race conditions. Progress feedback as well as the final results are presented in the GUI, by requests to the main thread to handle thread safety in \texttt{GTK\#}.
+
+Communication between the result visualisation branch and the impact calculator module is made transparent using the conversion class \texttt{FSharpConverter} (mapping data structures between C\# and F\# types), and the wrapper class \texttt{Calculator}.
+
+Everything necessary for running the program is implemented, and can be seen in the source code. Next step is testing the software.
+}
+
+%Testing sub-conclusion
+\noop{
+The tests performed on the implementation follow the guidelines of the book Software Engineering ed. 10 by Ian Sommerville[13]. 
+
+The three stages: Unit testing, Component Testing and System Testing performed, looking at progressively more composite systems.
+
+The parts of the implementation important for unit testing are specified and tested directly, making up the first two stages of testing.
+
+The complete system is then thoroughly testing using scenario testing and defined use cases, as the third stage of testing.
+
+Together, the unit tests and the scenario tests verify that the integral units behave as intended, as well as the interaction between all units as part of components and finally the entire system.
+
+The unit tests created for the stand-alone F# modules are written in the F# language, and run before deploying the compiled modules to the main program. 
+
+This independent testing ensures that the modules are individually functioning correctly independent of how they are used.
+
+All tests make use of input partitions, as input possibilities for the individual test cases are infinite. 
+
+The partitions are representative for each kind/composition of input values. 
+
+This covers all scenarios without having to go through all possible input values exhaustively.
+}
+
+The final program follows the design patterns and programming paradigms described in Chapter \ref{ch:Analysis}, the architectural design described in Chapter \ref{ch:Design} and software implementation described in Chapter \ref{ch:Implementation}. 
+
+In summary, the chosen design patterns are \textit{Model-View-Control} for the structure of the program architecture, and the \textit{Inversion of Control} for the role and responsibility for each component. The programming paradigms are \textit{Object-Oriented Programming} for model extraction and result visualisation, as well as \textit{Functional Programming} for algorithmic modules responsible for impact computation and function parsing.
+
+The design is structured as a tree with a general core extending to progressively specialised branches, following the IoC pattern, and nodes of the tree split into the parts: Model, View and Control. All branches reference the same model, which represents the LCI model intended to construct. As part of the UI, the branches are implemented as \texttt{Frames}. Each frame represents a partial view and can be navigated to through the main window.
+
+The creation of different components, such as background systems and foreground systems, takes place in different branches, in order to separate procedures which are not directly linked. The creation of e.g. foreground systems may depend on background systems, but this information is retrieved through the shared LCI model. This separation helps provide a more appealing user interface, as only relevant information is shown for the component currently in creation.
+
+Dynamic modelling of LCA systems is introduced by timestamped data values and dynamic properties. With these additions it is possible to model e.g. varying background systems, maturation periods, growth/cut-offs etc., while still making it possible to model static systems. 
+
+With functionality, such as impact calculations and parsing function expressions, implemented in stand-alone modules it is possible to test them independently of the rest of the implementation, to ensure correctness according to the requirements listed in Chapter \ref{ch:Requirements}.
+
+A branch for output is implemented, providing result visualisation in form of a 2D plot of indicator scores and the possibility of printing the computed results into a \texttt{.csv} file. The computations are performed by a worker thread, to keep the application responsible during large computations. Race conditions, regarding resources shared by the main and worker threads, are avoided by use of a lock.
+
+The implementation itself made use of tools such as \texttt{Gtk\#}, \texttt{OxyPlot} and \texttt{FParsec}, each chosen for their compatibility with the intentions of the program. Also persistency in the form of save/load procedures is implemented by \texttt{Xml} serialisation using the class \texttt{DataContractSerializer} implemented in \texttt{.Net}. 
+
+The testing procedure follows the three development testing stages: \textbf{Unit}, \textbf{Component} and \textbf{System}, as described in Chapter \ref{ch:Testing}. Each component is tested either directly through \textbf{Unit} or \textbf{Component} testing by use of unit tests, or as part of the \textbf{System} testing by use of scenario testing. All tests make use of input partitions, to cover the input space.
+
+\vspace{1cm}
+The resulting program extends the aggregation procedures of existing LCA software, creating a lightweight tool for modelling the intended system based on impact quantities for unit processes, component usages and dynamic properties.
+
+The design and implementation fulfils the listed requirements and with all tests satisfied, the project is completed successfully.

@@ -1,0 +1,50 @@
+\section{Terminology} \label{sec:Terminology}
+
+To clarify the descriptions and implementation, the mainly used terminology for the domain is defined, to remove any ambiguities which might appear otherwise.\footnote{The terms appended with an asterisk are terms customised for the course of this project, and therefore not necessarily general terms within LCA.}
+
+\textbf{Decision maker}\\
+The decision maker in a production system, is the role of the person who has responsibility for the main decisions throughout the different phases of LCA.
+
+\textbf{Functional unit}\\
+The functional unit is the metric which a process or system is defined to work by. The process or system will be defined by the impact produced by satisfying one functional unit.
+
+\textbf{Usage}*\\
+The term 'usage', will be used during the report and implementation to specify the amount of functional units used for a component. This may relate to usage of a background system, or a unit process.
+
+\textbf{Elementary flow}\\
+Elementary flow is a general term for the impact of a resource before any kind of transformation or characterisation. It is the raw data from the initial impact measurement such as outlet of a chemical or consumption of some material/energy.
+
+\textbf{Impact category}\\
+An impact category is a specific metric of impact. This could be eutrophication, fossil resources or global warming. 
+
+\textbf{LCIA method}\\
+A Life Cycle Inventory Analysis method, defines a set of categories to represent all impact, and the translation from elementary flows to these categories.\footnote{Much like how a set of base vectors can span a vector space, the categories span the impact space. All elementary flows can then be expressed as a combination of these categories.}
+
+\textbf{Indicator score/result}\\
+The indicator scores of a system are the resulting amount of impact, expressed in the unit of the impact categories, once all impacts have been aggregated.
+
+\textbf{Impact quantity}*\\
+Impact quantity is a term used during this project to define an intermediate 'indicator score' during the aggregation process, before the final results are found.
+
+\textbf{Dynamic Property}*\\
+A dynamic property is a function which, given a reference impact quantity and a time, can calculate how the impact quantity behaves over time.
+
+\textbf{Unit Process}\\
+The unit process is an atomic component of the production system. This process defines a discrete component responsible for a resource or technology and in particular the impacts from everything within this component.
+
+\textbf{System}*\\
+The term ’system’ is used excessively in the LCA domain, with many different meanings, but for this report, we will define systems as a grouping of processes.
+
+\textbf{Background System}\\
+The background system is a grouping of the processes which the decision maker has limited to no control over. This may be the heating or electricity grid, or some other resource which the decision maker cannot directly influence. 
+
+How background systems are defined differ slightly depending who is asked. Essentially a production system can either have a single background system containing all intractable unit processes, or several background systems. 
+
+In the terminology where only a single background system can be defined, the unit processes may define several different functional units within the same background system, and must therefore be divided into what are called background processes. These background processes follow a functional unit, where its unit processes define the sources for the required resources. 
+
+Alternatively, if several background systems are allowed, they can each be responsible for a single functional unit, and contain only the unit processes responsible for that resource. 
+
+The definition used in this report and implementation is the latter, to keep the definitions of systems and processes strict, which is beneficial for modelling during the implementation. 
+
+\textbf{Foreground System}\\
+Much like the background system, the foreground system contains unit processes necessary for the production system. These unit processes are the processes which the decision maker has direct influence on.\footnote{This usually means, that impact measurements are more precise for these processes.} For modelling purposes the foreground system also defines the dependency on the background systems, in regards to amount of functional unit for the production system to run.

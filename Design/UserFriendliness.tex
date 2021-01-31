@@ -1,0 +1,10 @@
+\section{User-friendliness}\label{sec:Design-UserFriendliness}
+As mentioned, the program may be used in both real LCA studies, as well as a teaching tool to show how such systems may behave. Therefore, it is required that we take care of the user experience, and make it possible for users to use the program without knowing how everything works behind the scenes.
+
+\subsection{The User Interface} \label{ssec:Design-UserInterface}
+A user-friendly interface is a subjective thing and is not trivial to accomplish. In general, when dealing with user interfaces, it is preferred to do the following: Give the user an overview of what is going on, and make main tasks easily accessible.
+
+Visually, it can easily get too cluttered with information while trying to give the user enough information to get an overview. This can be circumvented in our case, as the branches for creating the LCI model focus only on one specific component type at the time, meaning only relevant information is shown.
+
+\subsection{Persistency} \label{ssec:Design-Persistency}
+As also specified in the requirements under Section \ref{sec:Requirements-ProgramInteraction}, a part of creating a positive user experience, is to minimise the amount of iterative tasks necessary when using the tool. Persistency is therefore necessary in the form of saving LCI models with defined LCIA methods and components. Storage files may be loaded in for either multiple scenarios of a study or for different production systems entirely

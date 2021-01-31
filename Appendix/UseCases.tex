@@ -1,0 +1,608 @@
+\section{Scenario Testing: Use Cases} \label{app:Appendix-UseCases}
+The list of use cases carried out during the scenario testing can be found here in detail.
+
+There will be a considerable amount of use cases, which have a similar structure, therefore we will define use case templates in the attempt to minimise unnecessary repetition. The templates will be applied on multiple scenarios, varying a single step for different input partitions. Also subsequent use cases may refer back to previously defined procedures for creating data structures.
+
+This way we can define the use cases in a bulk fashion, but during testing, each individual use cases will be carried out in full. 
+
+If the program is not run while reading through use cases, the figures in the user manual (Appendix \ref{app:UserManual}) can be used for component overview in frames.
+
+
+%%%%%%%  Commands %%%%%%%  
+
+
+\newcommand{\usecase}[2]
+{
+\vspace{5mm}
+\textsc{Use Case:} \textbf{#1}
+\vspace{1mm}
+\begin{enumerate}#2\end{enumerate}
+}
+
+\newcommand{\step}[2]
+{
+\item \textsc{Action:} #1. \newline
+\textsc{Expected:} #2.
+}
+
+\newcommand{\placeholder}
+{
+\item \textless\textsc{placeholder}\textgreater
+}
+
+\newcommand{\placeholders}[1]
+{
+List of applied placeholders:
+\begin{itemize}#1\end{itemize}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Program navigation with empty model}
+{
+\step
+{Start Program \footnote{It is expected, that all use cases have this first step, and will therefore not be written explicitly for remaining use cases}}
+{Program starts on home frame}
+
+\step
+{Go to LCIA methods frame}
+{Empty frame\footnote{An empty frame is interpreted as a frame containing the implemented components, but with no interaction available for the user, i.e. no sensitive/enabled components.}, with only new method button available}
+
+\step
+{Go to Background systems frame}
+{Empty frame, with no button available}
+
+\step
+{Go to Foreground systems frame}
+{Empty frame, with no button available}
+
+\step
+{Go to Output frame}
+{Empty frame, with no defined fore- or background systems}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Creation of LCIA Method}
+{
+\step
+{Go to LCIA methods frame}
+{Empty frame, with only new method button available}
+
+\step
+{Enter name of new method in entry field and press the 'New Method' button.}
+{New method is created and chosen in the combobox. Method altering buttons 'Add Category' and 'Add Multiple Categories' are enabled.}
+
+\placeholder \footnote{The placeholder will be used for applying the use case for different input partitions.}
+
+\step
+{Press any navigation button in top ribbon}
+{The unsaved method disappears, and frame is empty.}}
+
+\placeholders{
+\step
+{Do Nothing}
+{Method is unchanged}
+
+\step
+{Press 'Add Category' button}
+{Impact category is added to method with default values 'Name' and 'Unit' and displayed in the treeview}
+
+\step
+{Press 'Add Multiple Categories' button and enter column of names in data prompt. Followed by pressing 'OK'}
+{Impact categories are added to method with specified names and default unit 'Unit' and displayed in the treeview.}
+
+\step
+{Press 'Add Multiple Categories' button and enter column of names and column of units in data prompt. Followed by pressing 'OK'}
+{Impact categories are added to method with specified names and units and displayed in the treeview.}}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Non unique category names in LCIA Method}
+{
+\step
+{Go to LCIA methods frame}
+{Empty frame, with only new method button available}
+
+\step
+{Enter name of new method in entry field and press the 'New Method' button.}
+{New method is created and displayed in tree view. Method altering buttons 'Add Category' and 'Add Multiple Categories' are enabled.}
+
+\step
+{Press 'Add Category' twice}
+{Same behaviour as when previously adding categories. Also 'Save Method' button will be disabled}
+
+\step
+{Alter name of categories to be unique}
+{'Save Method' Button enables.}
+
+\step
+{Alter name of categories back to being non-unique}
+{'Save Method' Button disables.}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Saving and Selecting LCIA Methods}
+{
+\step
+{Go to LCIA methods frame}
+{Empty frame, with only new method button available}
+
+\placeholder
+
+\step
+{Press 'Save Method'}
+{Method altering buttons disables. 'Select Method' button enabled}
+
+\step
+{Press 'Select Method'}
+{Method name is main window's "Selected Method' label}
+}
+
+\placeholders{
+\step
+{Add no categories}
+{Empty method}
+
+\step
+{Add a single category}
+{Method with one category}
+
+\step
+{Add multiple categories}
+{Method with multiple categories}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Creating Background Systems}
+{
+\step
+{Create and select method in LCIA method frame} \footnote{For subsequent use cases regarding system frames, it is assumed that an LCIA method is defined. This will therefore not be written expicitely.}
+{Method name is main window's "Selected Method' label}
+
+\step
+{Go to Background systems frame}
+{'New Background System' button is enabled}
+
+\step
+{Enter new background system name in entry and press 'New Background System'}
+{Background system is created, chosen in the combobox. Buttons 'New Unit Process', 'Add Background System Data' and 'Remove Background System' are enabled}
+
+\placeholder
+
+\step
+{Press 'Add Background System Data'}
+{Data Window opens for the chosen background system. General dynamic property and unit processes usages are shown. If background system contains no unit processes respective components are disabled.}
+}
+
+\placeholders{
+\step
+{Do nothing}
+{Empty background system}
+
+\step
+{Create new unit processes}
+{Unit processes name with default usage of 1 is shown in tree view below.}
+
+\step
+{Create multiple unit processes}
+{Multiple unit processes are shown in tree view below}
+
+\step
+{Create unit process, choose the unit process and press 'Remove Unit Process'}
+{Unit process is created as previously, and removed again from background system}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add General Dynamic Property to Background System}
+{
+\step
+{Create a background system as previously defined}
+{Background system is shown in combobox and has defined unit processes}
+
+\step
+{Press 'Add Background System Data'}
+{Data prompt opens with no chosen unit process in combobox and model altering buttons disabled except 'Add Dynamic Property'}
+
+\step
+{Press 'Add Dynamic Property'}
+{Empty function expression is added in treeview to the right in default time interval [0,0]}
+
+\placeholder
+
+\step
+{Press 'Apply'}
+{Data Window closes and changes are added to background system}
+
+\step
+{Press 'Add Background System Data'}
+{The defined general dynamic property is shown in treeview}
+}
+
+\placeholders
+{
+\step
+{Do nothing}
+{General dynamic property contains empty expression in default interval}
+
+\step
+{Add function expression with wrong syntax, and press enter}
+{Function expression is ignored and left empty}
+
+\step
+{Add function expression with correct syntax, and press enter}
+{Function expression is added to the general dynamic property and shown in the treeview}
+
+\step
+{Change function expression time interval to end < start}
+{Interval is stored, but pressing 'Apply' is ignored}
+
+\step
+{Change function expression time interval to start <= end}
+{Interval is stored}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Change General Dynamic Property of Background system}
+{
+\step
+{Create a background system as previously defined, but with defined general dynamic property}
+{Background system is shown in combobox}
+
+\step
+{Press 'Add Background System Data'}
+{The defined general dynamic property is shown in treeview}
+
+\placeholder
+
+\step
+{Press 'Apply'}
+{Data Window closes and changes are added to background system}
+
+\step
+{Press 'Add Background System Data'}
+{The defined general dynamic property is shown in treeview}
+}
+
+\placeholders
+{
+\step
+{Select function and press 'Remove Dynamic Property'}
+{Function expression is removed}
+
+\step
+{Change interval}
+{Interval is changed}
+
+\step
+{Change function expression}
+{Function expression is changed if correct syntax}
+}
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add Usages to Background System Unit Processes}
+{
+\step
+{Create a background system as previously defined}
+{Background system is shown in combobox and has defined unit processes}
+
+\step
+{Press 'Add Background System Data'}
+{Data prompt opens with no chosen unit process in combobox and model altering buttons disabled except 'Add Dynamic Property'}
+
+\step
+{Choose a unit process in the combobox}
+{Unit process default usage is shown in treeview. Interpolation checkbox is given the default value for the unit process 'ticked'. Buttons 'Add Usage' and 'Add Multiple Usages' are enabled.}
+
+\placeholder
+
+\step
+{Press 'Apply'}
+{Data Window closes and changes are added to background system}
+
+\step
+{Press 'Add Background System Data'}
+{The usage data defined are shown in the treeview when unit process is chosen in the combobox}
+}
+
+\placeholders
+{
+\step
+{No new data is added}
+{Only default value for unit process}
+
+\step
+{Default value is chosen and removed by pressing 'Remove Usage' button}
+{Default value is reapplied when usage for component is requested}
+
+\step
+{'Add Usage' is pressed}
+{New usage is added to component with timestamp 0 and value 0. Usages are shown in treeview}
+
+\step
+{Usage timestamp and value are changed to wrong syntax (not decimal number)}
+{New values are ignored}
+
+\step
+{Usage timestamp and value are changed to correct syntax (decimal number)}
+{New values are added to usage}
+
+\step
+{'Add Multiple Usages' is pressed, and column of values are defined in data window. Press button 'OK' pressed}
+{Usages are added with defined values as timestamps and value 0}
+
+\step
+{'Add Multiple Usages' is pressed, and two columns of values are defined in data window. Press button 'OK' pressed}
+{Usages are added with defined values as timestamps and values respectively}
+
+\step
+{Usages are added with same timestamp}
+{Subsequent usages definitions overwrite usage value at given timestamp after pressing 'Apply'}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Remove Background System}
+{
+\step
+{Create a background system as previously defined}
+{Background system is shown in combobox and has defined unit processes}
+
+\step
+{Press 'Remove Background System'}
+{Background system is removed from frame. If other background systems are defined, they will be shown, otherwise an empty frame is seen}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Create Foreground System}
+{
+\step
+{Go to Foreground systems frame}
+{'New Foreground System' button is enabled}
+
+\step
+{Enter new foreground system name in entry and press 'New Foreground System'}
+{Foreground system is created, chosen in the combobox. Buttons 'New Unit Process', 'Add Foreground System Data' and 'Remove Foreground System'  are enabled}
+
+\placeholder
+
+\step
+{Press 'Add Foreground System Data'}
+{
+Data Window opens for the chosen foreground system. 
+Shown components are: Unit processes, background systems, impact categories and general dynamic property each with their dynamic properties. If foreground system contains no unit processes or background systems, the respective components are disabled.}
+}
+
+\placeholders{
+\step
+{Do nothing}
+{Empty foreground system}
+
+\step
+{Create unit processes similar to with background systems}
+{Unit processes names with default usages of 1 are shown in tree view below.}
+
+\step
+{Create Background Systems as previously defined, and add to foreground system by pressing 'Add Background System'}
+{Background systems are shown in bottom treeview, displaying name and default usages of 1}
+
+\step
+{Create and Add background systems as previous. Remove Background system by choosing it and pressing 'Remove Background System'}
+{Background system as added as previousm and removed again from foreground system.}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add/Change General Dynamic Property in Foreground System}
+{
+\step{Similar procedure as with background system}
+{Similar behaviour}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add/Change Usages to Foreground System's Unit Processes}
+{
+\step{Similar procedure as with background system}
+{Similar behaviour}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add/Change Usages to Foreground System's Background Systems}
+{
+\step{Similar procedure as with unit processes}
+{Similar behaviour}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add/Change Dynamic Property to Foreground System's Background Systems}
+{
+\step{Similar procedure as with general dynamic properties when background system is chosen in combobox}
+{Similar behaviour}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add/Change Dynamic Property to Foreground System's Impact Categories}
+{
+\step{Similar procedure as with general dynamic properties when category is chosen in combobox}
+{Similar behaviour}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add Dynamic Property to Unit Process}
+{
+\step
+{Create system with the unit process as previously defined (background or foreground)}
+{System is created and shown in the frame with the unit process added}
+
+\step
+{Choose unit process and press 'Add Unit Process Data'}
+{Data window is opened with dynamic property for unit process (empty by default)}
+
+\step
+{Add/Change dynamic property as previously defined}
+{Similar behaviour as previously defined}
+}
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add Dynamic Property to Impact Quantity}
+{
+\step
+{Create system with the unit process as previously defined (background or foreground)}
+{System is created and shown in the frame with the unit process added}
+
+\step
+{Choose unit process}
+{Impact quantities corresponding to impact categories in selected LCIA method are shown in treeview}
+
+\step
+{Choose an impact quantity and press 'Add Impact Data'}
+{Data window is opened with impact quantities (timestamp 0 and value 0 by default) and dynamic property for the chosen impact quantity}
+
+\step
+{Similar procedure as with general dynamic properties}
+{Similar behaviour}
+}
+
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Add Quantity Data Values to Impact Quantity}
+{
+\step
+{Create system with the unit process as previously defined (background or foreground)}
+{System is created and shown in the frame with the unit process added}
+
+\step
+{Choose unit process}
+{Impact quantities corresponding to impact categories in selected LCIA method are shown in treeview}
+
+\step
+{Choose an impact quantity and press 'Add Impact Data'}
+{Data window is opened with impact quantities (timestamp 0 and value 0 by default) and dynamic property for the chosen impact quantity}
+
+\step
+{Similar procedure as with usages for background systems/unit processes}
+{Similar behaviour}
+}
+
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Output frame With Defined Foreground Systems}
+{
+\step{Create foreground systems as previously defined and navigate to Output frame}
+{Output frame is shown with the type-combobox set on 'Foreground Systems' and component-combobox set on first defined foreground system in selected LCIA method, and category-combobox set on first defined impact category (if any)}
+
+\step
+{Change type-combobox to 'Background Systems'}
+{Remainig frame is empty, as no background systems are defined}
+
+\step
+{Change type-combobox to 'Foreground Systems'}
+{Similar behaviour as previous}
+
+\step
+{Choose impact category in category-combobox}
+{Buttons 'Calculate' and 'Print Output' are enabled.}
+
+\step
+{Press 'Print Output' and choose file for saving to in file chooser window}
+{Empty file is created, as no results are calculated yet}
+
+\step
+{Press 'Calculate'}
+{Plot is updated with the components indicator scores according to defined impact calculation algorithm. The value for the chosen category is shown.}
+
+\step
+{Press 'Print Output' and choose file for saving to in file chooser window}
+{File is created/updated with indicator scores for the chosen component for all timestamps defined from start to end timestamp separated by the interval size. Default values are start 0, interval size 1 and end 100}
+
+\step
+{Change interval start, size and end}
+{Values are updated if correct syntax (decimal numbers)}
+
+\step
+{Calculate and Print Output}
+{Values plotted and saved are updated with specified interval properties}
+}
+
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Output frame With Defined Background Systems}
+{
+\step
+{Similar to procedure with foreground systems}
+{Similar behaviour}
+}
+
+
+
+%%%%%%%  Use Case %%%%%%%  
+
+
+\usecase{Save/Load}
+{
+\step
+{Create a model with procedures defined previous. Go to Home frame and Save}
+{Model is saved in chosen file}
+
+\step
+{Close program and start again}
+{Program closes and opens}
+
+\step
+{Load file saved previously}
+{Content is loaded, and seen on method, background system and foreground system frames}
+}

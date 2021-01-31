@@ -1,0 +1,21 @@
+\topskip0pt
+\vspace*{\fill}
+\begin{center}
+    \huge \textbf{Abstract}
+\end{center}
+\normalsize
+\vspace{1cm}
+
+The aim for this project was to create a tool for assessing the impact of LCA systems over a specified time period, extending traditional static aggregation procedures. Timestamped data values and dynamic properties are incorporated to specify the time dependency of the systems.
+
+The program is written in C\# and F\# and based on the design patterns Model-View-Control and Inversion of Control for architectural and behavioural guides. 
+
+The different parts of the program consist of the model extraction (divided into LCIA methods, background systems and foreground systems), impact calculations and result visualisation. During the model extraction and result visualisation, several views are provided to the user in form of frames and dialogs all defined in \texttt{GTK\#}. These frames and dialogs are presented in the main window, which provides means of navigation.
+
+The calculated results (the indicator scores) can be visualised in a impact/time plot, or printed as a \texttt{.csv} file.
+
+Modules for impact calculations and function parsing are written in F\# as stand-alone modules and tested separately, as these are critical features of the main functionality.
+
+The resulting implementation is tested by unit tests and scenario testing, to certify that the requirements are satisfied.
+
+\vfill

@@ -1,0 +1,17 @@
+\section{Programming Paradigms} \label{sec:ProgrammingParadigms}
+
+The program will generally comprise of three main parts, namely the \emph{model extraction}, the \emph{impact computation}, and the \emph{result visualisation}. Each of these three parts will have their own needs in terms of functionality, and we will therefore evaluate which paradigms suit them best. Our main criteria is, that the intent with the implementation must be clear.
+
+\strong{Model Extraction}
+The main responsibility of this part, is to form the LCI model. This means that the paradigm must be suited for nested mutable data structures. 
+
+For this purpose, an object-oriented paradigm is well suited, as each component can have an associated object, and the relations between components can be modelled well with nested objects.
+
+\pagebreak\strong{Impact Computation}
+As mentioned in the Section \ref{sec:Requirements-ImpactComputationAlgorithm}, the calculation of the total impact for the system, as a result of following a strict procedure, where side-effects are unwanted. With functional programming, it is possible to state the procedure clearly, and the prohibition of mutability ensures the avoidance of side-effects.
+
+\strong{Result Visualisation}
+For result visualisation, the only necessity is the possibility to show visuals in an interface. This purpose is generally supported in most programming languages independent of paradigm. 
+
+\vspace{1cm}
+The model extraction and result visualisation will be tied closely to an interface, where as the impact computation can be a separate module independent of the rest. For this the languages used will be C\# and F\#. Both languages are within the \texttt{.Net} framework, meaning compiled code can be directly accessible providing great compatibility. C\# is suited for implementing the interface and forming the model using objects. F\# will be used as the functional programming language, capable of defining the calculation algorithm clearly, and since it also supports objects the transfer of data structures to and from the module will be more streamlined. 

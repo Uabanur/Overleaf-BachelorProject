@@ -1,0 +1,27 @@
+\section{Design Patterns}\label{ssec:DesignPattern}
+
+When designing a program, the overall architecture and guidelines will be heavily influenced by the design patterns used. Before any major decisions are made regarding the architecture and general structure of the implementation, we will evaluate which architectural design patterns we wish to follow.
+
+\strong{Model-View-Controller}
+Probably one of the most well known design patterns is the MVC design pattern. This pattern describes the division of responsibility for applications with a user interface, and is often seen in web applications.
+
+The \emph{model} is the heart of the application, containing the domain model, and defines how it is interacted with. The model should be completely independent from the user interface, and thereby how the information is presented to the user.
+
+The \emph{view} is responsible for delivering information to the user, often in the form of a graphical user interface. The view should not alter data in the model, as this would create a dependency from the model to the functionality of the view.
+
+The \emph{controller} is the binding agent between the view and model. This entity is responsible for translating the users intentions into actions either acting on the view or model. The controller often comprises of series of event handlers and procedures, being activated by user input.
+
+The intention of the MVC design pattern is to create a separation of concern between the different responsibilities. The separation makes testing more accessible and introduces flexibility in addition to extensibility. 
+
+\strong{Inversion of Control}
+For many applications, it is desirable to maintain a general core, to maximise extensibility, and modularity. This is the main intention of the IoC design pattern, compared to traditional procedural programming, where a specialised core calls generalised frameworks. 
+
+This design pattern is good for agile projects, as the modules and procedures can be changed easily. Since the main functionality is concentrated in the modules, testing can become more specialised to their exact purpose.
+
+\vspace{5mm}
+
+Other considered architectural design patterns are; interceptor, singleton, abstract factory, service locator and data access object, which all introduce a separation of concern, and alter accessibility. 
+
+\vspace{1cm}
+
+For this project, the design will follow the MVC and IoC patterns. The MVC pattern creates a separation between the presentation layer and the domain model and the IoC pattern creates specialised modules for model extraction and result computation.

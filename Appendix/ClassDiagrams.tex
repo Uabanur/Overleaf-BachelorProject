@@ -1,0 +1,41 @@
+\section{Class Diagrams} \label{app:ClassDiagrams}
+\newcommand{\diagram}[2]
+{
+\begin{figure}[H]
+\centering
+    \includegraphics[#1]{#2}
+\end{figure}
+}
+
+A full class diagram with all information at once is not comprehensible, and it is therefore divided into discrete sections. Each grouping of classes are shown individually, focusing on the classes with their fields and procedures.
+
+The associations between classes are then shown in two figures; the model classes and the rest.
+First we have the \texttt{Launcher} class which is responsible for launching the program
+\diagram{page=1} {.ClassDiagrams/LauncherClassDiagram}
+
+\subsection{\textbf{ControlClasses}}
+For each control class, there exists a corresponding auto-generated view class. As this code is auto-generated, the class diagram is not shown in these diagrams.
+\diagram{page=1, width = \linewidth} {.ClassDiagrams/Control_ViewClassDiagrams}
+\diagram{page=2, width = \linewidth} {.ClassDiagrams/Control_ViewClassDiagrams}
+\diagram{page=3, width = \linewidth} {.ClassDiagrams/Control_ViewClassDiagrams}
+\diagram{page=4, width = \linewidth} {.ClassDiagrams/Control_ViewClassDiagrams}
+
+
+\subsection{\textbf{ModelClasses}}
+\diagram{page=1, width = \linewidth} {.ClassDiagrams/ModelClassDiagrams}
+\diagram{page=2, width = \linewidth} {.ClassDiagrams/ModelClassDiagrams}
+
+\subsection{\textbf{AuxiliaryClasses}}
+\diagram{page=1} {.ClassDiagrams/AuxiliaryClassDiagrams}
+\diagram{page=2} {.ClassDiagrams/AuxiliaryClassDiagrams}
+\diagram{page=3} {.ClassDiagrams/AuxiliaryClassDiagrams}
+
+\subsection{\textbf{ImpactCalculatorClasses}}
+\diagram{page=1, width = \linewidth} {.ClassDiagrams/ImpactCalculatorClassDiagrams}
+\diagram{page=2, width = \linewidth} {.ClassDiagrams/ImpactCalculatorClassDiagrams}
+
+\subsection{Associations}
+\diagram{page=1, width = \linewidth}
+{.ClassDiagrams/Associativity}
+\diagram{page=2, width = \linewidth}
+{.ClassDiagrams/Associativity}

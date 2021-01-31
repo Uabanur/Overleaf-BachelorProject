@@ -1,0 +1,11 @@
+\section{Subconclusion}\label{sec:Design-Subconclusion}
+
+In conclusion for the design of the program, the overall architecture will consist of a general core, calling progressively customised branches for functionality, following the IoC design pattern. Each node of the architectural tree will be defined by the MVC design pattern, to keep distinct separation on responsibility.
+
+From the core, there will extend branches with focus on individual aspects of the LCI model extraction, and result visualisation. For components such as background and foreground systems, further branches will be used, to specify properties for individual components.
+
+Certain functionalities are required for model extraction and impact computations, which are implemented as functional modules. These modules will follow specified interfaces and will be tested, to make sure that the behaviour is as intended. 
+
+Results in the form of indicator scores, will be shown as a 2D plot over the requested time interval. Results can be printed to a \texttt{.csv} file. 
+
+User experience, in the form of UI interaction, is taken into consideration while designing the program. There will be focus on providing an overview of the created system, as well as minimising redundant repetitions by making it possible to save and load LCI models.

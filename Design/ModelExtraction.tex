@@ -1,0 +1,147 @@
+\section{LCI Model Extraction}\label{sec:Design-ModelExtraction}
+
+The program must be capable of receiving the needed data from the user, to form the internal model on which the subsequent branches are dependent. 
+
+As a reminder, the LCI model is made of the processes for the system, which will be divided into processes belonging to the foreground system and the background systems. 
+
+For modelling purposes, it is beneficial to introduce these abstract notions into the model itself, thereby creating the data structure in accordance with the hierarchy of the components. This way, the data structure is going to be well suited for the impact computations defined in the requirements in Section \ref{sec:Requirements-ImpactComputationAlgorithm}. 
+
+We will discuss how we intend to extract the different parts of the LCI model individually, and since dynamic properties are introduced in almost all parts of the LCI model, we will look into extracting the dynamic properties from user input also. 
+
+\subsection{LCIA Methods} \label{ssec:Design-LCIAMethods}
+During the characterisation step, the unit processes get their impact quantities defined with respect to the chosen LCIA method. This is exactly the data we intend to populate our model with, meaning we need the LCIA method to know which categories our model is based on. 
+
+There exists predefined methods with acknowledged categories, used by the software tools mentioned in Section \ref{sec:ExistingSoftware}, but for generality and overall flexibility, it should be possible to define methods with either existing or custom sets of categories. 
+
+For this task, it is clear, that a branch in the architecture tree should be responsible for creating LCIA methods, from which the remaining model extraction should be based on. The information needed to create the LCIA method, is:
+
+\begin{itemize}
+    \item Method name
+    \item Categories consisting of names and metrics
+\end{itemize}
+
+\subsection{Background Systems} \label{ssec:Design-BackgroundSystems}
+Next step is to create the background systems, and thereby the unit processes they consists of. All components are created based on the categories defined in the LCIA method, and therefore the method should not be altered henceforth. 
+
+The creation of background systems is therefore moved to a separate branch, from where the selected LCIA method is accessed from the LCI model. This branch will then be responsible for all background systems defined in the LCI model.
+
+For the traditional definition of a background system, we need to extract the following pieces of information to compose a complete background system:
+
+\begin{itemize}
+    \item Background system name
+    \item Unit processes
+    \item Impact quantities for each unit process
+    \item Usage of each unit processes
+\end{itemize}
+
+Furthermore, to accommodate the dynamic impact calculation extensions in accordance to the requirements, the following pieces of information are also required:
+
+\begin{itemize}
+    \item List of timestamped impact quantities for unit processes
+    \item List of timestamped usages for each unit process
+    \item Dynamic properties for each category in the unit processes
+    \item Dynamic properties for each unit process
+    \item A general dynamic property for the background system
+\end{itemize}
+
+The impact quantities and usages will then be substituted with lists of timestamped values.
+
+As part of the data required for the extensions, custom properties of individual background systems, unit processes and their impact quantities needs to be accessed. This leads to a new branches from the overall background system branch, customised for populating the properties of those component. The referenced model for the new branches, will be the respective component intended to be populated.
+
+\subsection{Foreground Systems} \label{ssec:Design-ForegroundSystems}
+With the background systems defined, the actual foreground system can be defined next. Like previous, this action needs only the information stored in the model, making it well suited for an individual branch.
+
+Similar to the background systems, we can collect the pieces of information required to compose a complete foreground system following the traditional definition:
+
+\begin{itemize}
+    \item Foreground system name
+    \item Unit processes
+    \item Impact quantities for each unit process
+    \item Usage of each unit processes
+    \item References to defined background systems
+    \item Usage of each background system
+\end{itemize}
+
+Also, the following pieces of information are required to accommodate the extensions:
+
+\begin{itemize}
+    \item List of timestamped impact quantities for unit processes
+    \item List of timestamped usages for each unit process
+    \item Dynamic properties for category in the unit processes
+    \item Dynamic properties for each unit process
+    \item Dynamic properties for each category after calculating impact quantities from the foreground systems unit processes.
+    \item A general dynamic property for the foreground system.
+    \item List of timestamped usages for each background system
+    \item Dynamic property for each background system
+\end{itemize}
+
+Here, custom properties of the individual foreground systems, unit processes, and their categories, are accessed similarly through implemented branches extending from the overall foreground systems branch.
+
+
+\vspace{1 cm}
+This results in three branches from the main window, each with different responsibilities, but dependent on the completion of the previous. 
+
+Several concepts will be introduced to promote the user experience with respect to both overview and efficiency which will be discussed in Section \ref{sec:Design-UserFriendliness}.
+
+\subsection{Dynamic Properties} \label{ssec:DynamicProperties}
+Since the user cannot deliver a function directly to the program in any efficient or user friendly manner, this will be done through a text-representation of the function, which has to be parsed to extract the function itself. 
+
+To do this, we will define a F\# stand-alone module for parsing these functions, which can be tested.
+
+When parsing a function expression, several aspects such as operator associativity and hierarchy has to be taken into consideration. A way of handling these, is by defining a formal grammar with the desired properties. This grammar will be in the form of a context-free grammar with associated productions, variables and terminals. In essence, we will define an abstract syntax specifying how the elements are parsed. This syntax will be converted to an abstract syntax tree (AST) during parsing, incorporating the hierarchy and relations of elements. Finally we will define the semantics in the form of an evaluation function, providing the final function on behalf of the AST.
+
+\strong{Abstract Syntax}
+Generally the grammar would have the following productions for the function expression $E$:
+
+\newcommand{\pipe}{\: | \:}
+
+\begin{gather*}
+E \rightarrow E \text{ '+' } E \pipe E \text{ '-' } E \pipe E \text{ '*' } E \pipe E \text{ '/' } E \pipe E \; \text{ '\textasciicircum' } E \pipe \text{ '-' }E \pipe \textit{ '(' } E \text{ ')' } \pipe N
+\end{gather*}
+
+Interpreted as: An expression can either be a binary operator operating on two expressions, a negated expression, an expression in parentheses or a number $N$.
+
+This grammar, as a starting point, contains several faults. The grammar is ambiguous, and does not handle hierarchy and association of operators. Additionally, we need the grammar to accept the two parameters a dynamic property requires - the timestamp \textit{t} and the impact quantity \textit{q}. 
+
+Starting with hierarchy and associativity, we introduce the three productions $H$, $P$ and $F$ to get:
+
+\begin{align*}
+E &\rightarrow E \text{ '+' } H \pipe  E \text{ '-' } H \pipe H \\
+H &\rightarrow H \text{ '*' } P \pipe  H \text{ '/' } P \pipe P \\
+P &\rightarrow F \text{ '\textasciicircum' } P \pipe  F \\
+F &\rightarrow \text{ '-' } E \pipe \text{ '(' } E \text{ ')' } \pipe N
+\end{align*}
+
+Here all operators are parsed in the order of lowest to highest hierarchy . This ensures that the operators higher in hierarchy are bounded stronger, and therefore evaluated later during the semantics. 
+
+Operator associativity is also incorporated in this grammar, as all productions responsible for binary operators are recursively defined on only one side of the operator. This ensures that the expression is interpreted from one end, respectively to the association of the operator.
+
+Although this grammar is close, we still deal with left-recursion and lack function parameters. The grammar is altered by use of left-factorisation and adding the function parameters as terminals for the $F$ production. This gives us:
+
+\begin{align*}
+E &\rightarrow H \: E' \pipe \varepsilon \\
+E' &\rightarrow \text{ '+' } H \: E' \pipe  \text{ '-' } H \: E' \pipe \varepsilon \\
+H &\rightarrow P \: H' \pipe \varepsilon \\
+H' &\rightarrow \text{ '*' } P \: H' \pipe \text{ '/' } P \: H' \pipe \varepsilon \\
+P &\rightarrow F \text{ '\textasciicircum' } P \pipe  F \\
+F &\rightarrow \text{ '-' } E \pipe \text{ '(' } E \text{ ')' } \pipe N \pipe Q \pipe T
+\end{align*}
+
+The left-recursive terms have been left-factorised, by introducing optional productions, shown as a primed version of the original production. This grammar would grant left-associativity for addition, subtraction, multiplication and division, but right-associativity for exponentiation. 
+
+This grammar now contains the structure we need, and can be used to implement the function parser.
+
+\strong{Semantics}
+To evaluate the result of the AST, we need to define an evaluation function, which maps the nodes of the tree to the final function.
+
+In this case, the AST nodes can be modelled by discriminated unions in F\#, which makes it easy to map the node to the intended operation by pattern matching. A partial evaluation function can then be defined for each production, with the logic implemented for the respective operators.
+
+Finally the only needed function for this module, is the \texttt{Parse} function, which given a function expression returns the corresponding function. The type for this function can be defined as:
+\begin{figure}[H]
+\begin{lstlisting}[language=FSharp]
+val Parse: 
+    string -> double -> double -> double
+\end{lstlisting}
+\end{figure}
+
+Interpreted as: Given an expression in form of a string, it returns a function which, given two values, returns a resulting value. This type of function can be used for modelling dynamic properties, as we will see in the following section.

@@ -1,0 +1,94 @@
+\section{Branches} \label{sec:Implementation-Branches}
+The overall implementation of the branches is possible using the setup defined in the program architecture implementation, apart from some specific functionalities which will be discussed individually in the sections below.
+
+\subsection{LCI Model Extraction} \label{ssec:Implementation-LCIModelExtraction}
+Before these branches can be implemented, we first have to implement the model itself and the procedures for developing the internal data structure. Once the components for the model are implemented we will look at persistency. 
+
+\strong{The Model}
+The model defined by a class called \texttt{LCIModel} (as well as data classes for each type of component) will consist of the following of data structures:
+
+\begin{lstlisting}[language=CSharp]
+LCIAMethod SelectedMethod { get; set; }
+List<LCIAMethod> Methods { get; set;  }
+List<BackgroundSystem> BackgroundSystems { get; set; }
+List<ForegroundSystem> ForegroundSystems { get; set; }
+\end{lstlisting}
+
+Here the \texttt{SelectedMethod} contains the selected LCIA method, and the three lists are the defined methods, background systems and foreground systems.
+
+The program will be implemented such that multiple foreground systems can be defined, making it possible to make comparisons between different setups by the decision maker. Using the definition of the background system from Section \ref{sec:Terminology} foreground systems can themselves depend on multiple background systems, although the list of background systems here is composed of all background systems, not necessarily tied to a foreground system.
+
+Each interaction with the lists of components are performed through defined methods in the \texttt{LCIModel} class, to make sure that all manipulations are executed correctly. 
+
+Since the data structures depend on the selected method, the background systems and foreground systems presented to the user must be defined in their LCIA method. The requested components for the view are thereby filtered according to the specified LCIA method.
+
+\strong{Persistency}
+Having all information required for the LCI model confined in a single class makes it easy to implement persistency in the form of save/load by serialising and deserialising the data structures in the \texttt{LCIModel} class. 
+
+The serialisation is performed using the \texttt{DataContractSerializer} class, and by setting \texttt{DataContractAttributes} to specify which properties are involved. With this setup, it is possible to manually specify which properties are taken into consideration during saving/loading models. 
+
+Alternatively, the \texttt{XmlSerializer} class could be used. However, this approach has its disadvantages. Either all properties must be public, or the serialisation procedure must be specified manually. Neither of which are desirable.
+
+With the properties of the \texttt{LCIModel} kept non-public, any branch accessing the model must utilise the defined methods. This makes the \texttt{DataContractSerializer} highly preferable.
+
+When using the \texttt{DataContractSerializer}, the constructor of a class is not called during deserialisation, meaning the initialisation of properties is performed in an \texttt{Initialize} method, which is called from both the constructor, and a method with the attribute \texttt{OnDeserializing}. This way, the initialisation of properties happens independently if the object is created normally or deserialised. 
+
+\subsection{Result Visualisation} \label{ssec:Implementation-ResultVisualisation}
+As part of the implementation of the branch responsible for result visualisation, it is required communicate with the Impact Calculator module, in terms of data structure conversion calling functions. 
+
+Next we will discuss the tools used for plotting the results in the output frame. 
+
+\strong{F\# and C\# Conversions}
+The compatibility between the C\# and F\# data structures was briefly touched upon in the design of the impact computation (Section \ref{sec:Design-ImpactComputation}), and the implementation of the conversion will be outlined in this section.
+
+Without this conversion, the components used for model extraction could be defined by the types from the F\# modules, although these are not mutable in the C\# implementation, which is a great feature for the impact computation, although mutability is highly beneficial during the model extraction procedure. 
+
+
+\vspace{1 cm}
+A class called \texttt{FSharpConverter} is created with static methods for conversions between the data representations in our LCI model, called \texttt{ToFSharp} and \texttt{FromFSharp} with overloads for each type of component. An example of a data structure conversion is seen here for the unit process:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=CSharp]
+public static ImpactCalculator.UnitProcess ToFSharp(UnitProcess unit, double timestamp){
+  unit.Usages.GetValueAt(timestamp, out var usage);
+  return new ImpactCalculator.UnitProcess(
+    unit.Name, 
+    usage, 
+    ListModule.OfSeq(unit.ImpactQuantityList.Select(iq => ToFSharp(iq, timestamp))), 
+    ToFSharp(unit.DynamicProperty)
+    );
+}
+\end{lstlisting}
+\end{figure}
+
+Here the conversions are simple due to the chosen F\# types primarily being composed of \texttt{records}. Each type which is not built-in in both C\# and F\# are converted. The conversion of components containing timestamped data points (such as impact quantities or usages) has to extract the proper value for the given timestamp, since the impact calculator module calculates the indicator scores at a specific timestamp.
+
+In addition to the conversion class, a class for module transparency is implemented called \texttt{Calculator} which, given a component, performs the conversion to and from F\# data structures and calculates the indicator scores, using the impact calculator module. Here the indicator scores for the foreground systems can be calculated using the implemented method: 
+
+\begin{figure}[H]
+\begin{lstlisting}[language=CSharp]
+public List<ImpactQuantity> CalculateForegroundSystem (double timestamp, ForegroundSystem foregroundSystem){
+  var fsharpForegroundSystem = FSharpConverter.ToFSharp (foregroundSystem, timestamp);
+  var res = ImpactCalculator.CalculateForegroundSystem (timestamp, fsharpForegroundSystem);
+  return res.Select(FSharpConverter.FromFSharp).ToList();
+}
+\end{lstlisting}
+\end{figure}
+
+With these classes the module can be used without having to deal with data structure conversions, and instead be used as any other class. 
+
+The conversion class, being the link between the main program and the dependent modules, will be tested thoroughly, as any unwanted behaviour here could result in impact calculations based on a faulty foundation. 
+
+\strong{Plotting Indicator Scores}
+For creating the graph/plot it is beneficial to use defined tools, instead of drawing the plot manually.  Several tools are available, and here the library called \texttt{OxyPlot} is chosen for its compatibility with \texttt{Gtk\#} and being cross platform. \cite{OxyPlotWeb}
+
+As the result of the impact calculations yields the indicator scores for each requested timestamp, and the information displayed in the plot is specific to a chosen impact category, the data for all impact categories must be stored and ready for retrieval when the user requests to see the results for other impact categories in the plot. The calculated indicator scores are therefore saved in a map, with the category name as the key, mapping to a list of timestamped impact quantities. This way the data is not recalculated unnecessarily and all indicator scores are available for storing in a file on disk. 
+
+Depending on the size of the modelled system, and the amount of time steps, the computations may take a noticeable amount of time. To stop the UI from halting during this time, a \texttt{BackgroundWorker} is used to perform the computations. Once finished the worker requests that the plot is updated. With the introduction of multiple threads, concurrency must be dealt with. \texttt{GTK\#} as a toolkit allows only one thread invoking methods at any instance, therefore it is advised that only the main thread invokes methods in \texttt{GTK\#} i.e. interaction with the GUI. The worker thread will therefore request the main thread to update the GUI when needed. \cite{GTK_Threading} In addition, a lock is added to the resource containing the calculated results, to avoid race conditions. The lock is in the form of a boolean value strictly accessed by the main thread before instantiating the worker thread, and after calculations are resolved.
+
+A progress bar is added to give the user an overview of the computation progress, as well as the possibility to stop the computations prematurely.
+
+\vspace{1 cm}
+With these implementations, it is possible to implement the branches fully as their equivalent frames.
+
+The explicit implementation, is composed of classes in the groupings \texttt{Models}, \texttt{User Interface}\footnote{The naming of this grouping is dictated by the auto generated code for the views by \texttt{Gtk\#}.} and \texttt{Controls}. In addition groupings called \texttt{AuxiliaryClasses} and \texttt{ImpactCalculator} are implemented, which as their names imply, contain auxillary classes (such as abstract classes and business classes) and the classes required to communicate with the \texttt{ImpactCalculator} module.

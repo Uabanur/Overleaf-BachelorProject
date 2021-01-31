@@ -1,0 +1,61 @@
+\chapter{Testing}\label{ch:Testing}
+% How it was tested (if any testing took place).
+
+%The section on Test (if any) in the main report should explain the test strategy, i.e. what sorts of things were to be tested. A complete list of test cases, test data and/or test results should be in an appendix.
+
+With the implementation complete, the program needs to be tested. Without testing, there is no guarantee for the behaviour of the software, as operational procedures may be flawed and bugs/errors may be present unknowingly. As it is required that the program is user-friendly, the interaction with the UI should be tested also.
+
+\vspace{5mm}
+The functionality testing of the implemented software is of high importance, and therefore the software will be tested on each stage according to \textit{Development Testing} in the book \textit{Software Engineering ed. 10} by Ian Sommerville\cite{SoftwareEngineering}.
+
+\vspace{5mm}
+According to this, there are three stages of development testing:
+
+\strong{Unit Testing}
+Where the individual units/classes of the software are tested directly, focusing on functionality and/or methods.
+
+\strong{Component Testing}
+Where a composition of units, which are integrated as a single component, is tested.
+
+\strong{System Testing}
+Where the system is tested as a whole, focusing on the interaction between the internal components.
+
+\vspace{1cm}
+The implementation parts falls into following variants, listed with their category and responsibility:
+\begin{itemize}
+    \item \textbf{Data classes}: Wrapping data structures.
+    \item \textbf{Functional classes}: Specific data handling procedures.
+    \item \textbf{View classes}: Components presented in the view.
+    \item \textbf{Control classes}: Event handlers for the view.
+    \item \textbf{Custom F\# modules}: Algorithms.
+\end{itemize}
+
+The testing strategy is to create unit tests for the implementation categories which contain specific procedures and algorithms, as these are integral for the implementation.
+
+In general all code should be unit tested, but since this is a time costly procedure data classes, event handlers and view classes will not have direct unit tests. 
+
+View and event handler classes will be tested by use of scenario testing, which in contrast to unit tests are not executed automatically. The definition of scenario testing is: (\cite{SoftwareEngineering} page 770)
+
+\quotenoref{
+An approach to software testing where test cases are derived from a scenario of system use.
+}
+
+meaning we will create test cases for suitable uses of the program, together with the expected behaviour. 
+
+The difference between scenario and unit testing is that scenario testing tests the behaviour without knowing the internal implementation, in contrast to unit testing which makes use of the knowledge of the implementation. 
+
+This is also known as black- and white-box testing, where black-box testing is defined as: (\cite{SoftwareEngineering} page 758)
+
+\quotenoref{
+An approach to testing where the testers have no access to the source code of a system or its components. The tests are derived from the system specification.
+}
+
+representing the scenario testing, and white-box testing is defined as: (\cite{SoftwareEngineering} page 774)
+
+\quotenoref{
+An approach to program testing where the tests are based on knowledge of the structure of the program and its components. Access to source code is essential for white-box testing.
+}
+
+representing the unit testing.
+
+For each method of testing we will discuss how the tests are performed, and the implementation of the tests themselves can be seen in the source code. The stages \textbf{Unit testing} and \textbf{Component testing} will be implemented by unit tests, and the \textbf{System Testing} will be performed by scenario tests in the following sections.

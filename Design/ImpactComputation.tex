@@ -1,0 +1,136 @@
+\section{Impact Computation} \label{sec:Design-ImpactComputation}
+
+As mentioned in the analysis of programming paradigms Section \ref{sec:ProgrammingParadigms}, the impact computation algorithm will be implemented as a stand-alone module in the functional language F\#. This makes, it easier to test and ensure correctness.
+
+The algorithm will follow the computation procedure for dynamic systems described in the requirements Section \ref{sec:Requirements-ImpactComputationAlgorithm}. We will discuss how the module will be designed, looking at each component, and what the corresponding F\# types are made of. 
+Looking at the required algorithm, the aggregation tree, can be implemented closely by declaring types for: Dynamic properties, impact quantities, unit processes, background systems and foreground systems. Also since the timestamps will be a measure of time by an unspecified unit,\footnote{This way the user can specify all timestamps for the data values based on the best fitting unit (be it fortnights or 30 minutes) and not having to comply with the units hardcoded in the implementation.} they will be modelled as a \texttt{double} with the type \texttt{TimeStamp}. 
+
+\begin{figure}[H]
+\begin{lstlisting}[language=Fsharp]
+type TimeStamp = double
+\end{lstlisting}
+\end{figure}
+
+\subsection{Type: \texttt{DynamicProperty}}
+To match the definition of the dynamic property, this type will be composed of a function mapping a timestamp and impact quantity to a resulting impact quantity. This type is defined as:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=Fsharp]
+type DynamicProperty =  
+    TimeStamp -> double -> double
+\end{lstlisting}
+\end{figure}
+
+For those not familiar with the F\# syntax, this type defines a function, which given a timestamp and a decimal number, returns a decimal number.\footnote{This is a simplified version of how functions work in F\#. In reality, functions only take one parameter, and return one result. In this case, the function takes a timestamp, and returns a function which expects a double as parameter returning a double, hence the multiple arrows in the type. This second function can be defined using the \texttt{TimeStamp} parameter, with the value given to the initial function. This notion of breaking up functions is called \texttt{currying}, and can be used to create layers of abstraction.}
+
+\subsection{Type: \texttt{ImpactQuantity}}
+The impact quantities, according to the requirements, are tied to the corresponding impact category. Also, according to the algorithm extensions, we need to be able to define a dynamic property for each impact quantity. This dynamic property can be part of the type, meaning all impact quantities have their own dynamic property. This type is defined as:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=FSharp]
+type ImpactQuantity = {
+    Category: string
+    Quantity: double
+    DynamicProperty: DynamicProperty
+}
+\end{lstlisting}
+\end{figure}
+
+Again, for those not familiar with the F\# syntax, this type defines what is called a \texttt{record}. This design choice, is for compatibility when converting to C\# types, as \texttt{record}s are compiled into \texttt{.Net} classes. (\cite{FSharpBook} Chapter 3.2)
+
+Alternatively, the types could be defined using \texttt{tuples} (\cite{FSharpBook} Chapter 3.1). The module would look and behave similar, but the corresponding C\# types would not have the class abstraction, and would result in types with a length of 72 symbols for just the impact quantity. The foreground system type, as we will define shortly, would become hundreds of symbols, which is unnecessary and without benefit.
+
+When implementing the module using \texttt{record} types, it is also possible to access their properties by dot-notation, meaning decomposing elements become less prone to bugs.
+
+The quick reader, will have noticed that the \texttt{ImpactQuantity} type has no unit defined for the quantity. The reason for this, is that the unit for the impact category is set during the previous steps of the LCA study. Therefore, all impact quantities in the same category are defined by the same unit after the flow translation, and no new information is then gained by carrying the unit when performing the calculation.
+
+That being said, the category is a necessary part of the impact quantity, to make sure only impact quantities in the same category are ever accumulated.
+
+\vspace{1cm}
+With the \texttt{DynamicProperty} and the \texttt{ImpactQuantity} we are ready to create the \texttt{UnitProcess} and the composite system types.
+
+\subsection{Type: \texttt{UnitProcess}}
+Unit processes require dynamic impact quantities for each impact category, as well as a general dynamic property and a usage. For testing/debugging and model overview, the name of the unit process is also attached to the component. The type is therefore defined as:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=FSharp]
+type UnitProcess = {
+    Name: string
+    Usage: double
+    ImpactQuantities: ImpactQuantity list
+    GeneralDynamicProperty: DynamicProperty
+}
+\end{lstlisting}
+\end{figure}
+
+As the module is set to work with any LCI model, independent of the amount of defined impact categories, the unit processes are defined as to have a list of impact quantities of arbitrary length. 
+
+The naming convention used for dynamic properties, is that a dynamic property called \texttt{GeneralDynamicProperty} is applied to impact quantities for all impact categories after any specific dynamic property has been applied.
+
+\subsection{Type: \texttt{BackgroundSystem}}
+The background system requires a set of unit processes, and a general dynamic property. Similar to the unit process, this type can be defined as:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=FSharp]
+type BackgroundSystem = {
+    Name: string
+    UnitProcesses: UnitProcess list
+    GeneralDynamicProperty: DynamicProperty
+}
+\end{lstlisting}
+\end{figure}
+
+Again the type is created with the an arbitrary long list of unit processes, to model any given LCI model.
+
+The usage of the background system is not defined in its type, as it is independent of the foreground system. This information is instead stored in the type for the foreground system, to match how it is defined in the requirements.
+
+This could also apply for the usage in the unit process type, but here the unit process is not independent of its parent system. Here, the design is chosen to be clearer and simpler by defining the usage in the component instead of e.g. appended as a tuple in the unit process lists.
+
+\subsection{Type: \texttt{ForegroundSystem}}
+Finally we have the foreground system. The requirements to model a generic foreground system, based on the types above, are as follows: 
+
+Firstly we need to define its unit processes. Then, according to the requirements, we need a list of dynamic properties for each impact category.\footnote{This list of dynamic properties is here called \texttt{CategoryDynamicProperties}} Finally like the previous components, we need a general dynamic property. 
+
+This takes care of modelling its unit processes, but for the dependent background systems, we need: The background system itself, its usage and a dynamic property that define how the dependency can change over time. These are defined by a tuple in the foreground system, as they are specific to the relationship between this exact foreground system and the background system. Alternatively the data could be modelled as a nested record, but in this case it would make little to no difference. The type can be defined as:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=FSharp]
+type ForegroundSystem = {
+    Name: string
+    UnitProcesses: UnitProcess list
+    CategoryDynamicProperties: DynamicProperty list
+    GeneralDynamicProperty: DynamicProperty
+    BackgroundSystemTuples: (BackgroundSystem * double * DynamicProperty) list
+}
+\end{lstlisting}
+\end{figure}
+
+\vspace{1 cm}
+Looking at the types defined here, and the definitions in the requirements, we have a near identical match. Few choices were taken regarding where to store information in the types, but the decisions were taken to keep the representation as close as possible to the original aggregation tree, with its hierarchy of components.
+
+With these types, it is possible to create functions for calculating the resulting impact following the specified algorithm. The function declarations will follow the types:
+
+\begin{figure}[H]
+\begin{lstlisting}[language=FSharp]
+val CalculateImpactOfUnitProcess: 
+    TimeStamp -> UnitProcess -> 
+        ImpactQuantity list
+
+val CalculateImpactOfBackgroundSystem: 
+    TimeStamp -> BackgroundSystem -> double -> 
+        ImpactQuantity list
+
+val CalculateImpactOfForegroundSystem: 
+    TimeStamp -> ForegroundSystem -> 
+        ImpactQuantity list
+\end{lstlisting}
+\end{figure}
+
+Each function takes a timestamp and the corresponding component they intend to calculate the impact quantities for. The function for the background system takes the usage as a addition parameter. 
+
+The F\# syntax should be familiar enough by now, to see that each function returns a list of impact quantities, which are the resulting impact quantities for that component. 
+
+During the implementation, the function for calculating impact quantities for the composite system, should call the functions for the constituents. This not only reduces redundancy, making the procedure much clearer, but also ensures that each data type is handled correctly for the different levels of the calculation tree.
+
+Also, several helper functions may be defined, to standardise how the interaction with the different data types are handled, such as \textbf{adding} sets of impact quantities, \textbf{scaling} impact quantities by usage, \textbf{applying} dynamic properties to impact quantities.
+

@@ -1,0 +1,91 @@
+\section{Impact Computation Algorithm} \label{sec:Requirements-ImpactComputationAlgorithm}
+
+As part of the characterisation phase of the life cycle impact assessment step (as described in section \ref{sec:Background}), the elementary flows are translated and aggregated into indicator scores. The goal of this phase is, to map a huge data collection into discrete categories, and to aggregate the values into indicator scores.
+
+This aggregation is what we want to make concrete. It is required that this procedure is satisfied by the resulting program.
+
+First we will look at the traditional aggregation procedure, and then we will go into how we intend to extend it. It is important that the relations between the components are not changed, in order to keep the comparability with other analysis results.
+
+From Section \ref{ssec:Phase3} the aggregation is one of the last steps of the characterisation step during impact assessment. This step assumes that the elementary flows have been expressed as impact quantities, in accordance with the impact categories, for each unit process.
+
+\subsection{Traditional aggregation}
+From the Life Cycle Inventory analysis phase (as described in Section \ref{ssec:Phase2}), we have an LCI model containing foreground systems, background systems and their unit processes. By the assumption stated above, these all have defined impact quantities according to the LCIA method’s impact categories.
+
+To create the indicator scores, all impact quantities are weighted and summated for each category, with a certain procedure following the hierarchy of the components in the LCI model.
+
+\strong{Unit Process}
+The impact quantities of the unit process are given, as this is the atomic component of the system, and has defined impact quantities given by the initial assumption.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[page=1, width=0.3\linewidth]{.Figures/ImpactAggregation}
+    \caption{Impact of a Unit Process, defined by its impact quantities.}
+    \label{fig:UnitProcess-Aggregation}
+\end{figure}
+
+The resulting impact quantities for the unit processes must therefore be untouched during aggregation. 
+
+\strong{Background System}
+The background system is not defined by its own impact quantities. These impact quantities are instead calculated based on its internal unit processes. These unit processes define the required resources for the background system to satisfy the functional unit. Therefore the impact of the unit processes are scaled to satisfy the background systems functional unit; this is expressed as their \emph{usage}.\footnote{By expressing it like this, the usage can be used either as a ratio between several sources all contributing directly to the same resource, or to express the required amount of a sub-resource needed to produce the resource defined by the functional unit.}
+
+The impact quantities for the background system are then calculated, by scaling the impact quantities of the unit processes by their usages and summing across each impact category. This results in a single impact quantity for each impact category.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[page=2, width=1\linewidth]{.Figures/ImpactAggregation.pdf}
+    \caption{Impact of a Background System, defined by its Unit Processes.}
+    \label{fig:BackgroundSystem-Aggregation}
+\end{figure}
+
+It is not uncommon that bi-products are created during the production (which may itself have had an impact to create) such as heat or composites. Flows of resources to and from a process are therefore categorised as either upstream or downstream; describing if the resources are required for the production to run, or are a bi-product of running the production, respectively. 
+
+To manage these up- and downstream resources, it is common to count downstream flows as negative when translating to the impact quantity for the system during the aggregation. This way the flows are weighted in the same manner and one avoids problems with double counting.
+
+\strong{Foreground System}
+Lastly the foreground system is evaluated, as the component defining the intended production system. 
+
+Much like background systems, the foreground system is not defined by its own set of impact quantities. These are calculated based on its unit processes as well as the dependent background systems. The notion of upstream and downstream flows also apply when translating elementary flows, meaning the impact quantities of the systems unit processes hold all necessary information for the aggregation. 
+
+Similar to the background system, the foreground system is linked to a functional unit, which its sub-components are scaled by, i.e. their usage. This scaling is not only applied for the foreground system's unit processes, but also to the use of background systems, relative to their functional units.
+
+The impact quantities for the foreground system are then calculated, in the same manner as for background systems, but with the addition of the impact quantities of the dependent background systems, scaled by their usage. This again results in a single impact quantity for each impact category, which are the desired indicator scores.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[page=3, width=1\linewidth]{.Figures/ImpactAggregation.pdf}
+    \caption{Impact of a Foreground System, defined by its dependent Background Systems and its Unit Processes.}
+    \label{fig:ForegroundSystem-Aggregation}
+\end{figure}
+
+It is apparent that the aggregation naturally follows a tree structure based on the hierarchies of the components of the LCA model.
+
+\subsection{Extension}
+
+In addition to the traditional (static) aggregation, we also require that the program supports the possibility of time dependent/dynamic aggregation.
+
+As mentioned earlier, we will introduce time dependency without changing the relations between the components of the LCA model. Instead of evaluating a static picture of the system, this extension will introduce the development and growth of the system as time advances. Many factors of the production system may change over time, and as suggested by Section \ref{sec:Importance}; if reasonable assumptions are made, the result can be closer to the actual impact when extrapolating onto time frames of unknown data, compared to static models.
+
+There will be introduced two kinds of time dependent extensions: \\
+The simplest extension is timestamped data points, for measured or postulated data e.g. usages between power sources in the electricity grid, or impact quantities in a maturation period\footnote{A maturation period is an initial period where the impact may vary until a steady state is found.}.
+
+The second extension will be in the form of \emph{dynamic properties} which are piecewise functions defining how impact quantities behave over time. It is with the use of dynamic properties, that biases can be introduced to the time dependency, and is therefore used with caution. That being said, dynamic properties can be a strong tool when used properly, e.g. to simulate growth. With these functions, it is possible to model a foreground system, which is expected to improve in certain areas, and as a consequence have less use of one of its unit processes over time. Additionally, dynamic properties can be used to introduce sudden increment/decrement in impact for certain categories, simulating change in technology during growth. Since the aggregation operates on the abstract notion of impact quantities, this simulation can be applied without necessarily knowing which elementary flows cause the behaviour.
+
+Neither of the two extensions change how a system relates to its sub-components, meaning the tool will function correctly when used for statically analysed studies, as is required.
+
+\vspace{1cm}
+The effect of the dynamic properties depends on where it is applied in the aggregation tree, so we will go through the levels where they are required for the extended functionality.
+
+\strong{Unit Process}
+Dynamic properties are defined for the different impact categories in the unit process, simulating how that process may evolve in time, as well as a general dynamic property for the unit process itself, applied to all categories, simulating overall change/improvement.
+
+\strong{Background System}
+A general dynamic property is defined for background systems, applied to all categories after calculating the impact quantities from its unit processes, simulating overall change/improvement.
+
+\strong{Foreground System}
+Several dynamic properties are defined for the foreground system. 
+
+Each background system (that the foreground system depends on), has an associated dynamic property, simulating their dependency/usage over time.
+
+Each category defined in the selected LCIA method has an associated dynamic property in the foreground system. This function is applied after the impact of the unit processes is calculated. The purpose of these dynamic properties, is to describe how the impact on each category can evolve in the areas which are controlled by the decision maker. 
+
+Finally a general dynamic property is defined for the foreground system which, like previous general dynamic properties, simulate overall change/improvement for its unit processes i.e. before impact quantities for the background systems are added.

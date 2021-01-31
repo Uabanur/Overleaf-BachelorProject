@@ -1,0 +1,44 @@
+\section{Program Architecture} \label{sec:Implementation-ProgramArchitecture}
+
+According to the designed program architecture, all nodes of the tree (root and branches) follow a similar MVC design pattern. To implement this, a general setup will be defined for all nodes.
+
+In the implementation of the MVC design pattern, it is experienced that the relationship between the view and the control is dictated by the tools used to present the view. These tools often define procedures for accessing event queues and handlers. Several tools are therefore evaluated, to find the best fit for the chosen program design.
+
+The criteria for the chosen tool, are:
+\begin{itemize}
+\item Compatible with the MVC design pattern
+\item Support cross platform implementations
+\item Easy to make changes to the design
+\item Have direct access to events
+\item Good documentation and support
+\end{itemize}
+
+Since the programming languages are C\# and F\#, in the \texttt{.Net} framework, we look at cross platform GUI tools within \texttt{.Net}. For this reason, we will look at tools which run on the \texttt{Mono} platform, as it is designed for exactly this. The description on the homepage of \texttt{Mono} says:
+
+\begin{center}
+\textit{Mono is a software platform designed to allow developers to easily create cross platform applications part of the .NET Foundation.} \cite{Mono}
+\end{center}
+
+Tools listed in \texttt{Mono} are; \texttt{Gtk\#}, \texttt{MonoMac}, \texttt{Windows.Forms}, \texttt{Xwt} and \texttt{QtSharp}. \cite{Mono-GUI}
+
+Out of these, \texttt{Gtk\#}, \texttt{Windows Forms} and \texttt{Xwt} are cross platform where the latter is 'in progress' and currently does not support a stable release.
+
+Choosing between \texttt{Gtk\#} and \texttt{Windows.Forms} comes down to support, usability and compatibility with different platforms. Both tools would satisfy our needs, and for this project \texttt{Gtk\#} is chosen for its easy-to-use layout engine as well as its large \texttt{Gtk+} community and heritage. 
+
+The way \texttt{Gtk\#} works according to the MVC design pattern, is that the layout engine auto-generates the code necessary for creating the view, according to the design defined in the designer. The auto-generated code is tied to a control class which contains the implementation for all event handlers. 
+
+Using this procedure, the main window and all branches are implemented with the needed functionality as outlined in the Design section. 
+
+\strong{Frames}
+Each branch will be implemented using what is called a \texttt{Frame} in \texttt{Gtk\#}, suitable for granting a space in the main window where the internal functionality can be accessed in the user interface. An abstract class for the general \texttt{Frame} is defined and is extended by all branch implementations.
+
+The final frames are then:
+\begin{itemize}
+    \item \texttt{HomeFrame}
+    \item \texttt{MethodFrame}
+    \item \texttt{BackgroundSystemFrame}
+    \item \texttt{ForegroundSystemFrame}
+    \item \texttt{OutputFrame}
+\end{itemize}
+
+which are responsible for the respective branches, where \texttt{HomeFrame} is the initial frame of the program, where persistency features are accessible.

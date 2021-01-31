@@ -1,0 +1,31 @@
+\chapter{Evaluation} \label{ch:Evaluation}
+
+With the project completed, some experiences and thoughts are compiled to guide future projects and possibly further implementations on the program.
+
+Areas such as program performance, and testing has room for improvements and additional work. The current version of the program satisfies what we intended to build, but that does not mean that nothing more could be done.
+
+\strong{Performance}
+The performance aspect considered is memory management. The created model is stored in main memory, and in case of large enough systems there could be thrown an \texttt{OutOfMemoryException}. A way of handling this, could be to check the memory consumption for each allocation, and prompt the user if the limit is reached. This is also relevant when calculating indicator scores, as (depending on amount impact categories and time steps) the resulting matrix may become substantial.
+
+%Worker thread implemented now!!
+%The overall performance of the program makes it possible to model large systems, although the calculation time scales proportionally to the requested time steps. To off-load the main thread, there has been looked into the creation of worker-threads, making it possible to perform calculations for a considerable amount of time steps without halting the UI.
+
+%Although this possibility was investigated, it was not implemented in the final program, as interaction with the main thread and worker threads produced low-level memory allocation errors to occur. With \texttt{Gtk} only the main thread is intended to interact with the UI, meaning it would be necessary to systematically check if the worker-thread is finished, while presenting the process in the UI. This could have been introduced by delayed events, but was chosen not to. Since it was unclear how the preferred procedure was in the C\# wrapper of \texttt{Gtk}.
+
+
+
+\strong{Testing}
+Without testing there is no guarantee for the behaviour of the software. A lot of focus has been directed into checking correctness and component interaction, but even with the amount of tests performed and documented in Chapter \ref{ch:Testing}, there are two testing procedures which were not conducted.
+
+To make sure, that all code is reached by unit tests, normally the tester would make effort to maximise the \textit{Code Coverage}. This unfortunately was not possible, since the software implementation was produced in \textit{Visual Studio Community} for OS X. Code coverage within \texttt{.Net} is currently only supported in the Windows SDK, and therefore not accessible during the period of this project. 
+
+To minimise this risk, the tests themselves are thought out carefully.
+
+\vspace{1cm}
+Also, as a separate testing procedure entirely, it could have been beneficial to perform focus group testing. As the UI is intended to be easy to use and interact with, focus group testing could have been used to point out where changes were to occur. This form of testing makes for a great source of unbiased feedback on UI interaction.
+
+\vspace{1 cm}
+\strong{Final Remarks}
+Overall this project has been a great experience and the resulting program satisfactory.
+
+The IDE used was \textit{Visual Studio Community} on OS X, which would cause occasional errors with meta data, and bindings. If one was not used to working with \texttt{.Net} and how configuration files are structured, this could have caused unnecessary problems. With that said, the compatibility between F\# and C\#, being able to call code directly from the compiled file was impeccable. Using \texttt{.Net} does not mean it has to be implemented in \textit{Visual Studio} as the IDE of course, but with the \texttt{Gtk\#} designer in \textit{Visual Studio}, the time taken to built the user interface was significantly shortened, which was a great benefit as this was a one-man group.

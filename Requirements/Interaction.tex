@@ -1,0 +1,13 @@
+\section{Program Interaction} \label{sec:Requirements-ProgramInteraction}
+For the program to be usable, there must be some requirements regarding the user interaction with the program itself.
+
+\strong{User Input}
+It is required for the program, to be able to receive user input, and create an internal LCI model based on those inputs. With the dynamic extensions, the data points in the LCI model must be timestamped.
+
+As an addition to this, since the amount of user input may be large in quantity, the interface must provide means of multiple data input, to satisfy a positive user experience when used in practice.
+
+\strong{Text Parsing}
+The information needed from the user comes mainly in the form of numbers, units and dynamic properties. These will each be given, as a text representation by the user input, and has to be parsed by the program. This means, that dynamic properties must be evaluated by a function parser from the function expression provided by the user, in order to create applicable functions. 
+
+\strong{User friendliness}
+The user interface must be user friendly and intuitive. This includes the possibility to create and reuse LCIA methods and background systems across multiple studies. Therefore the program must provide the functionality of saving and loading LCI models.

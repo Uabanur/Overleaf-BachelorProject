@@ -1,0 +1,192 @@
+
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{parskip}
+\usepackage{tablefootnote}
+\usepackage{amssymb}
+\usepackage{mathrsfs}
+\usepackage{mathtools} 
+\usepackage{wrapfig} 
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ right=40mm,
+ left=40mm,
+ top=40mm,
+ bottom=40mm
+ }
+
+\usepackage[nottoc]{tocbibind}
+\usepackage[titles]{tocloft}
+
+\usepackage[
+backend=biber,
+style=numeric,
+maxbibnames=9
+]{biblatex}
+\addbibresource{bibliography.bib}
+
+% Force the bib entries not to be split across pages
+\interlinepenalty = 10000
+
+\usepackage{csquotes}
+
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{epstopdf}
+\usepackage{amsmath}
+\usepackage{dsfont}
+\usepackage{bm}
+
+\usepackage{tikz}
+
+%dank
+\usepackage{marvosym}
+
+
+% equation number format: in section 1, (1.1), (1.2) ..
+\usepackage{amsmath}
+
+%% multi col
+\usepackage{multicol}
+
+\usepackage{siunitx}
+
+% hyperlinks
+\usepackage[
+hidelinks %Remove link markup
+]{hyperref}
+
+\usepackage{mdframed}
+
+\usepackage{listings}
+\usepackage{upquote}
+ 
+ \usepackage{color}
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+ 
+\lstdefinelanguage{FSharp}%
+{morekeywords={let, new, match, with, rec, open, module, namespace, type, of, member, val, % 
+and, for, while, true, false, in, do, begin, end, fun, function, return, yield, try, %
+mutable, if, then, else, cloud, async, static, use, abstract, interface, inherit, finally },
+  otherkeywords={ let!, return!, do!, yield!, use!, var, from, select, where, order, by },
+  keywordstyle=\color{bluekeywords},
+  sensitive=true,
+  basicstyle=\ttfamily,
+	breaklines=true,
+  xleftmargin=\parindent,
+  aboveskip=\bigskipamount,
+	tabsize=4,
+  morecomment=[l][\color{greencomments}]{///},
+  morecomment=[l][\color{greencomments}]{//},
+  morecomment=[s][\color{greencomments}]{{(*}{*)}},
+  morestring=[b]",
+  showstringspaces=false,
+  literate={`}{\`}1,
+  stringstyle=\color{redstrings},
+}
+
+
+\lstdefinelanguage{CSharp}
+{
+captionpos=b,
+%numbers=left, 
+%numberstyle=\tiny, 
+frame=none, %lines  
+showspaces=false,
+showtabs=false,
+breaklines=true,
+showstringspaces=false,
+breakatwhitespace=true,
+escapeinside={(*@}{@*)},
+commentstyle=\color{greencomments},
+morekeywords={public, static, double, new, out, return, partial, var, value, get, set},
+keywordstyle=\color{bluekeywords},
+stringstyle=\color{redstrings},
+basicstyle=\ttfamily\small,
+}
+
+\usepackage{siunitx}
+%\usepackage{unixode}
+
+
+% spacing in enum and itemize
+\usepackage{enumitem}
+
+\usepackage{caption}
+\usepackage{subcaption}
+
+
+% New commands
+\newcommand{\TODO}[1]
+{
+\begin{center}
+    \color{white}\ref{TODO}\\
+    \color{red}
+    \textsc{#1}
+\end{center}
+}
+
+\newcommand{\strong}[1]
+{
+\vspace{5mm}
+\textbf{#1}
+\vspace{1mm}
+\newline
+}
+
+\newcommand{\strongA}[1]
+{
+\vspace{5mm}
+\textbf{#1}
+\vspace{1mm}
+}
+
+\newcommand{\quotenoref}[1]
+{
+\begin{center}
+    \vspace{5mm}
+    {\large\textquotedblleft}\textit{#1}{\large\textquotedblright}
+    \vspace{5mm}
+\end{center}
+}
+
+\newcommand{\quoteref}[2]
+{
+\begin{center}
+    \vspace{5mm}
+    {\large\textquotedblleft}\textit{#1}{\large\textquotedblright}
+    \footnote{#2}
+    \vspace{5mm}
+\end{center}
+}
+
+
+\newcommand{\noop}[1]
+{}
+
+\newcommand{\frontpage}[6]
+{
+\begin{center}
+    \huge
+    \textsc{#1}\\
+    \Large
+    \vspace{3mm}
+    #2 \\
+    \large
+    \vspace{1 cm}
+    #3 \\
+    \vspace{3mm}
+    \textit{#4}
+\end{center}
+\vspace{2cm}
+#5
+\vfill
+#6
+}
+
+%%%%%%%%%%%%%%%%%%
+%% HEADER OVER %%%
+%%%%%%%%%%%%%%%%%%

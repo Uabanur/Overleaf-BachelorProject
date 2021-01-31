@@ -1,0 +1,17 @@
+\section{Existing LCA Tools}\label{sec:ExistingSoftware}
+
+%A description of the state of the art concerning all the approaches (frameworks, theories, running systems, commercial solutions, ...) proposed in literature to solve the described problem
+
+%Provide examples to illustrate both the problem and the proposed solution.
+Before discussing what we wish to create,  we need to review which tools are currently available. 
+
+Examples of existing tools are; \texttt{OpenLCA}\cite{OpenLCA}, \texttt{SimaPro}\cite{SimaPro} and \texttt{Gabi}\cite{GaBi}, where the tool \textit{OpenLCA} is open software. What these tools have in common is: 
+\begin{itemize}
+    \item The possibility to gather data e.g. through database access.
+    \item Efficient handling of thousands of elementary flows.
+    \item Variety of approved LCIA methods.
+    \item Translating elementary flows in terms of the impact categories based on the LCIA method's respective characterisation model.
+    \item Given data, capable of calculating indicator scores for a system.
+\end{itemize}
+
+This list of functionalities correlates nicely with the steps of the LCIA phase, but one thing these tools have in common is, that data is handled statically. These tools are therefor great at creating different instances of systems and assess them, but cannot model change through time. If a decision maker was to model a system undergoing growth and e.g. depending on a varying heating grid, the indicator scores would have to be calculated manually at different time steps. 

@@ -1,0 +1,22 @@
+\section{Functionality} \label{sec:Requirements-Functionality}
+
+In addition to program interaction, there are requirements for what the program must do.
+
+\strong{Model composition}
+It must be possible to tie foreground systems to their background systems and unit processes, as well as the background systems to their unit processes.
+
+\strong{Interpolation}
+When data points are needed between two defined timestamped data points, it shall be possible to choose between interpolating or referencing last known data value.
+
+\strong{Data Extrapolation}
+Using dynamic properties and a given base value, the program must be able to extrapolate impact quantities into time intervals where no recorded data is available.
+
+\strong{Result Feedback}
+It must be possible to get the calculated indicator scores in form of visual representation and as raw data, to get a feel for the results of the LCI model instantly, but also get the results directly for the user to use.
+
+\strong{Calculation Behaviour}
+During impact calculations, the LCI model must remain unchanged, meaning subsequential calculations on the same model should yield identical results.
+
+The program must be able to handle large amounts of data. 
+
+The impact calculations must be executed correctly, which is perhaps the most important requirement when given an LCI model. What it means for the impact calculations to be executed correctly is described in detail in Section \ref{sec:Requirements-ImpactComputationAlgorithm}.

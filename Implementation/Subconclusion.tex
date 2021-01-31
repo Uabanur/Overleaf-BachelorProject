@@ -1,0 +1,12 @@
+\section{Subconclusion}\label{sec:Implementation-Subconclusion}
+The architectural nodes are implemented using \texttt{Gtk\#}. This tool is chosen for its compatibility with the MVC design pattern, community, being cross platform and an easy-to-use layout engine.
+
+The F\# modules: \texttt{FunctionParser} and \texttt{ImpactCalculator} are implemented. The function parser uses the library \texttt{FParsec} and relies on the functionality implemented in the class \texttt{OperatorPrecedenceParser} as well as a simple evaluation function. The impact calculator is implemented without need for additional tools, but guided strictly by the required algorithm.
+
+All branches defined in the design section are implemented as \texttt{Frames}, which are partial views, nested in the main window, giving access to the functionality of the branch. Functionality needed for the branches in form of plotting tools and data classes are implemented accordingly. 
+
+Impact calculations are performed by a worker thread, to keep the application responsive during large system evaluations. Access to the computed data is restricted by a lock strictly handled by the main thread, to avoid race conditions. Progress feedback as well as the final results are presented in the GUI, by requests to the main thread to handle thread safety in \texttt{GTK\#}.
+
+Communication between the result visualisation branch and the impact calculator module is made transparent using the conversion class \texttt{FSharpConverter} (mapping data structures between C\# and F\# types), and the wrapper class \texttt{Calculator}.
+
+Everything necessary for running the program is implemented, and can be seen in the source code. Next step is testing the software.
